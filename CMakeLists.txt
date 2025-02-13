@@ -21,6 +21,7 @@ else()
   set(IS_TOPLEVEL_PROJECT FALSE)
 endif()
 
+option(MAGIC_ENUM_BUILD_MODULE "Build magic_enum C++20 module" ON)
 option(MAGIC_ENUM_OPT_BUILD_EXAMPLES "Build magic_enum examples" ${IS_TOPLEVEL_PROJECT})
 option(MAGIC_ENUM_OPT_BUILD_TESTS "Build and perform magic_enum tests" ${IS_TOPLEVEL_PROJECT})
 option(MAGIC_ENUM_OPT_INSTALL "Generate and install magic_enum target" ${IS_TOPLEVEL_PROJECT})
@@ -48,6 +49,16 @@ target_include_directories(
   ${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+
+if(MAGIC_ENUM_BUILD_MODULE)
+  set(MAGIC_ENUM_MODULE_TGT ${PROJECT_NAME}_module)
+  add_library(${MAGIC_ENUM_MODULE_TGT})
+  target_compile_features(${MAGIC_ENUM_MODULE_TGT} PUBLIC cxx_std_20)
+  target_sources(${MAGIC_ENUM_MODULE_TGT}
+    PUBLIC FILE_SET CXX_MODULES FILES module/magic_enum.cppm
+  )
+  target_link_libraries(${MAGIC_ENUM_MODULE_TGT} PRIVATE ${PROJECT_NAME})
+endif()
 
 if(MAGIC_ENUM_OPT_BUILD_EXAMPLES)
   add_subdirectory(example)
