@@ -11,10 +11,19 @@ export module magic_enum;
 import std;
 
 extern "C++" {
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:5244) // '#include <>' in the purview of module appears erroneous.
+#elifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
+#endif
 #include <magic_enum/magic_enum_all.hpp>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#elifdef __clang__
 #pragma clang diagnostic pop
+#endif
 }
 #endif
 
